@@ -1,7 +1,7 @@
 import { addComponent } from "bitecs";
 import { addObject3DComponent } from "../utils/jsx-entity";
-import { AmbientLight, LightTag } from "../bit-components";
-import { AmbientLight as AL } from "three";
+import { AmbientLightTag, LightTag } from "../bit-components";
+import { AmbientLight } from "three";
 import { HubsWorld } from "../app";
 
 export type AmbientLightParams = {
@@ -9,13 +9,18 @@ export type AmbientLightParams = {
   intensity: number;
 };
 
+const DEFAULTS = {
+  intensity: 1.0
+};
+
 export function inflateAmbientLight(world: HubsWorld, eid: number, params: AmbientLightParams) {
-  const light = new AL();
+  params = Object.assign({}, DEFAULTS, params);
+  const light = new AmbientLight();
   light.color.set(params.color).convertSRGBToLinear();
   light.intensity = params.intensity;
 
   addObject3DComponent(world, eid, light);
   addComponent(world, LightTag, eid);
-  addComponent(world, AmbientLight, eid);
+  addComponent(world, AmbientLightTag, eid);
   return eid;
 }
